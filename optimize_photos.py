@@ -20,6 +20,16 @@ QUALITY = 82         # JPEG quality
 
 # (source path under Photos/, dest path under images/)
 PORTFOLIO = [
+    # Commercial
+    ("Commercial/SXCW_2_edited.jpg",                         "portfolio/commercial/commercial-01.jpg"),
+    ("Commercial/EuroClassicsPorsche-Parking lot.JPG",       "portfolio/commercial/commercial-02.jpg"),
+    ("Commercial/Chipotle Yorktown.JPG",                     "portfolio/commercial/commercial-03.jpg"),
+    ("Commercial/PCH_2_edited.jpg",                          "portfolio/commercial/commercial-04.jpg"),
+    ("Commercial/DJI_20260414135343_0055_D.JPG",             "portfolio/commercial/commercial-05.jpg"),
+    ("Commercial/SXCW_4_edited.jpg",                         "portfolio/commercial/commercial-06.jpg"),
+    ("Commercial/DJI_20260616114751_0116_D.JPG",             "portfolio/commercial/commercial-07.jpg"),
+    ("Commercial/dji_fly_20260217_094722_0001_1771342430995_photo.JPG", "portfolio/commercial/commercial-08.jpg"),
+    ("Commercial/dji_fly_20260217_094806_0002_1771342430861_photo.JPG", "portfolio/commercial/commercial-09.jpg"),
     # Cityscape / Richmond Area
     ("portfolio/Cityscape/Richmond Area/RIC.JPG",            "portfolio/cityscape/richmond-01.jpg"),
     ("portfolio/Cityscape/Richmond Area/RIC1.JPG",           "portfolio/cityscape/richmond-02.jpg"),

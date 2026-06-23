@@ -313,7 +313,7 @@
           <div style="padding:56px 32px;text-align:center">
             <div style="width:58px;height:58px;border-radius:50%;margin:0 auto 22px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
             <h3 style="margin:0 0 10px;font-family:'Newsreader',serif;font-weight:500;font-size:1.7rem;color:var(--ink)">Request sent</h3>
-            <p style="margin:0 auto;max-width:42ch;color:var(--ink2);text-wrap:pretty">Thanks — I've got your request and sent a confirmation to your email. I'll follow up to confirm the date. <strong style="color:var(--ink)">Check your spam/junk folder</strong> just in case and mark it "not spam."</p>
+            <p style="margin:0 auto;max-width:42ch;color:var(--ink2);text-wrap:pretty">Thanks — your request is in. I'll reach out shortly to confirm your date and the details.</p>
             <button onClick="{{ resetForm }}" style="margin-top:24px;background:transparent;color:var(--accent);border:1px solid var(--accent);font-weight:600;font-size:.9rem;padding:11px 22px;border-radius:9px;cursor:pointer;transition:background .2s" style-hover="background:color-mix(in srgb,var(--accent) 10%,transparent)">Send another request</button>
           </div>
         </sc-if>
@@ -331,21 +331,28 @@
             <div class="ga-form2" style="margin-top:14px">
               <div><label class="ga-lab" for="ga-package">Package</label>
                 <select class="ga-field" id="ga-package" name="package" style="appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 fill=%22none%22 stroke=%22%239A9082%22 stroke-width=%222%22><path d=%22M3 5l3 3 3-3%22/></svg>');background-repeat:no-repeat;background-position:right 14px center;cursor:pointer">
-                  <option>Essential — 15 photos</option>
-                  <option>Complete — 25 photos + 60s video</option>
-                  <option>Premium — 50 photos + 5 video clips</option>
-                  <option>Monthly plan — 4 shoots / month</option>
-                  <option>Custom / not sure yet</option>
+                  <option>Essential — 15 edited aerial photos ($119)</option>
+                  <option>Complete — 25 edited photos + 60s video ($199)</option>
+                  <option>Premium — 50 edited photos + 5 videos ($299)</option>
+                  <option>Recurring — 4 shoots of "Complete Package"/month agency deal ($399/mo)</option>
+                  <option>Custom — describe in Notes below</option>
                 </select>
               </div>
-              <div><label class="ga-lab" for="ga-when">Preferred timeframe</label><input class="ga-field" id="ga-when" name="when" type="text" placeholder="Next week, weekday AM"/></div>
+              <div><label class="ga-lab" for="ga-when">Preferred date</label><input class="ga-field" id="ga-when" name="when" type="date"/></div>
+            </div>
+            <div style="margin-top:14px">
+              <span class="ga-lab">Add-ons (optional)</span>
+              <div style="display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:8px">
+                <label style="display:inline-flex;align-items:center;gap:8px;font-size:.92rem;color:var(--ink2);cursor:pointer"><input type="checkbox" name="addons" value="Same-day rush delivery" style="accent-color:var(--accent);width:16px;height:16px"/> Same-day rush delivery (+$20)</label>
+                <label style="display:inline-flex;align-items:center;gap:8px;font-size:.92rem;color:var(--ink2);cursor:pointer"><input type="checkbox" name="addons" value="60 second aerial video" style="accent-color:var(--accent);width:16px;height:16px"/> 60-second aerial video (+$30)</label>
+              </div>
             </div>
             <div style="margin-top:14px"><label class="ga-lab" for="ga-notes">Anything else</label><textarea class="ga-field" id="ga-notes" name="notes" rows="3" placeholder="Gate code, special angles, deadline…" style="resize:vertical;min-height:84px"></textarea></div>
 
             <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:22px">
               <p style="margin:0;display:flex;gap:9px;align-items:flex-start;font-size:.84rem;line-height:1.5;color:var(--ink2);max-width:42ch">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                After you book I'll email to confirm — check spam/junk and mark "not spam."
+                After you book I'll reach out to confirm your date and the details.
               </p>
               <button type="submit" style="display:inline-flex;align-items:center;gap:.5em;background:var(--accent);color:#F6F3EC;border:0;font-weight:600;font-size:1rem;padding:15px 28px;border-radius:9px;cursor:pointer;box-shadow:0 12px 30px rgba(193,73,43,.34);transition:transform .18s,box-shadow .18s,background .18s" style-hover="transform:translateY(-2px);background:var(--accent-d)">Send request
                 <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -442,13 +449,24 @@ class Component extends DCLogic {
   ];
 
   // ============================================================
-  // BOOKING FORM → FormSubmit (emails owner + auto-confirms customer).
-  // No backend / no account needed. The FIRST submission triggers a
-  // one-time activation email to FORM_TO — click the link in it once to
-  // start receiving requests. Auto-confirmation goes to the customer's
-  // "email" field via _autoresponse below.
+  // BOOKING FORM → Google Form (silent submit; feeds the Booking Log /
+  // folder automation). The customer never leaves the site — no redirect.
+  // The field IDs and the Package <option> strings (in the markup above)
+  // MUST match the live Google Form exactly, or Google silently rejects
+  // the response. "Preferred date" is a Google date question, so it is
+  // posted as _year / _month / _day. Email has no field on the form, so
+  // it is folded into Notes.
   // ============================================================
-  FORM_TO = "aerialphotova@gmail.com";
+  GFORM_POST = "https://docs.google.com/forms/d/e/1FAIpQLSdobVKHdfw8mAMyBxTVuCi5M2ScsIOgn7tCyykslTmMcvgIcQ/formResponse";
+  GFORM = {
+    name:    "entry.1823719113",
+    phone:   "entry.245555874",
+    address: "entry.1834484994",
+    package: "entry.1431225465",
+    addons:  "entry.660334",      // checkboxes — appended once per checked box
+    date:    "entry.1509869973",  // date question → _year/_month/_day
+    notes:   "entry.2012407127"
+  };
 
   state = { lightbox: null, sent: false };
 
@@ -523,19 +541,32 @@ class Component extends DCLogic {
     e.preventDefault();
     const f = this._form || e.target;
     const get = (n) => (f && f.elements[n]) ? f.elements[n].value : '';
-    const data = {
-      name: get('name'), email: get('email'), phone: get('phone'),
-      address: get('address'), package: get('package'), when: get('when'), notes: get('notes'),
-      _subject: 'New booking request — ' + (get('name') || 'website'),
-      _template: 'table',
-      _autoresponse: "Thanks for your booking request with Aerial Photography. I've received your details and will email you to confirm the date shortly. — Aerial Photography · FAA Part 107 Licensed · Central Virginia"
-    };
-    // Emails the request to FORM_TO and auto-confirms the customer (their "email" field).
-    fetch('https://formsubmit.co/ajax/' + this.FORM_TO, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(data)
-    }).catch(function () {});
+    const G = this.GFORM;
+    const fd = new FormData();
+    fd.append(G.name, get('name'));
+    fd.append(G.phone, get('phone'));
+    fd.append(G.address, get('address'));
+    fd.append(G.package, get('package'));
+    // Add-ons: append one value per checked box (Google checkboxes repeat the key).
+    if (f && f.elements['addons']) {
+      const boxes = f.elements['addons'];
+      const list = (boxes.length === undefined) ? [boxes] : Array.from(boxes);
+      list.forEach(b => { if (b.checked) fd.append(G.addons, b.value); });
+    }
+    // Preferred date: <input type="date"> => YYYY-MM-DD => Google date sub-fields.
+    const d = get('when');
+    if (d && d.indexOf('-') > 0) {
+      const parts = d.split('-');
+      fd.append(G.date + '_year', parts[0]);
+      fd.append(G.date + '_month', String(parseInt(parts[1], 10)));
+      fd.append(G.date + '_day', String(parseInt(parts[2], 10)));
+    }
+    // No email field on the Google Form — fold the customer's email into Notes.
+    const email = get('email');
+    fd.append(G.notes, (email ? ('Email: ' + email + '\n') : '') + get('notes'));
+    // Opaque cross-origin POST: records the response in Google Forms without
+    // navigating away. Response is not readable (no-cors) by design.
+    fetch(this.GFORM_POST, { method: 'POST', mode: 'no-cors', body: fd }).catch(function () {});
     this.setState({ sent: true });
   }
 
@@ -582,7 +613,7 @@ class Component extends DCLogic {
         features: p.features.map(f => ({ t: f.t, cls: f.ok ? 'ok' : 'no' })),
         onBook: () => this.bookPackage(p.key),
       })),
-      bookMonthly: () => this.bookPackage('Monthly'),
+      bookMonthly: () => this.bookPackage('Recurring'),
       onImgError: (e) => { const t = e.target; t.style.display = 'none'; const ph = t.parentNode && t.parentNode.querySelector('[data-ph]'); if (ph) ph.style.display = 'grid'; },
       sent: this.state.sent,
       notSent: !this.state.sent,
