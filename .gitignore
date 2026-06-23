@@ -1,0 +1,11 @@
+# OS cruft
+.DS_Store
+Thumbs.db
+*.log
+
+# Master photo/video library — full-resolution originals (and raw video) live
+# on the owner's machine only; they're too large for the repo. The web-optimized
+# copies in images/ (built by optimize_photos.py) are what the site uses and
+# what ships here.
+/Photos/
+/Non Decided/

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#F6F3EC}
+  .js-reveal [data-reveal]{opacity:0;transform:translateY(18px);transition:opacity .75s cubic-bezier(.2,.7,.2,1),transform .75s cubic-bezier(.2,.7,.2,1)}
+  .js-reveal [data-reveal].in{opacity:1 !important;transform:none !important}
+  .reduced [data-reveal]{opacity:1!important;transform:none!important;transition:none}
+  .pf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .pf-grid .g-wide{grid-column:1/-1;aspect-ratio:2.6/1}
+  .pf-grid figure{aspect-ratio:4/3}
+  @media(max-width:1000px){.pf-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){.pf-grid{grid-template-columns:1fr}.pf-grid .g-wide{aspect-ratio:16/10}}
+  .pf-chip{cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink2);font-family:'Hanken Grotesk',sans-serif;font-size:.88rem;font-weight:500;padding:9px 16px;border-radius:30px;transition:all .2s;white-space:nowrap}
+  .pf-chip:hover{border-color:var(--ink);color:var(--ink)}
+  .pf-chip[data-on="1"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .pf-sub{cursor:pointer;border:1px solid transparent;background:transparent;color:var(--ink2);font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.04em;padding:6px 12px;border-radius:6px;transition:all .2s;white-space:nowrap}
+  .pf-sub:hover{color:var(--ink)}
+  .pf-sub[data-on="1"]{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent-d)}
+  html{scroll-behavior:smooth}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}[data-reveal]{opacity:1!important;transform:none!important;transition:none}}
+</style>
+</helmet>
+
+<div ref="{{ rootRef }}" style="--paper:#F6F3EC;--paper-2:#EFEADE;--ink:#1A1611;--ink2:#6E665B;--muted:#9A9082;--line:rgba(26,22,17,.14);--line2:rgba(26,22,17,.07);--accent:#C1492B;--accent-d:#9C3A22;--dark:#15110B;background:var(--paper);color:var(--ink);font-family:'Hanken Grotesk',system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh">
+
+  <!-- masthead -->
+  <header style="position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line2)">
+    <div style="max-width:1320px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+      <a href="index.html" style="display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);line-height:1.05">
+        <span style="width:30px;height:30px;border-radius:8px;flex:none;display:grid;place-items:center;background:var(--accent);color:#F6F3EC"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></span>
+        <span>
+          <span style="display:block;font-family:'Newsreader',Georgia,serif;font-weight:500;font-size:1.1rem">Aerial Photography</span>
+          <span style="display:block;font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:2px">FAA Part 107 Licensed · Central Virginia</span>
+        </span>
+      </a>
+      <nav style="display:flex;align-items:center;gap:18px">
+        <a href="index.html" style="display:inline-flex;align-items:center;gap:7px;color:var(--ink2);text-decoration:none;font-size:.88rem;font-weight:500" style-hover="color:var(--ink)">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Home</a>
+        <a href="index.html#book" style="color:#F6F3EC;background:var(--accent);padding:9px 16px;border-radius:7px;font-weight:600;font-size:.88rem;text-decoration:none;transition:background .2s" style-hover="background:var(--accent-d)">Book a shoot</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- title block -->
+  <section style="max-width:1320px;margin:0 auto;padding:64px 28px 28px">
+    <p style="margin:0 0 18px;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:12px"><span style="width:26px;height:1px;background:var(--accent)"></span>Portfolio</p>
+    <h1 style="margin:0;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:clamp(2.6rem,6vw,4.6rem);line-height:1;letter-spacing:-.015em;text-wrap:balance">The full archive</h1>
+    <p style="margin:22px 0 0;font-size:clamp(1.04rem,1.5vw,1.18rem);color:var(--ink2);max-width:62ch;text-wrap:pretty">Aerial coverage across Central Virginia, organized by category. Some categories are broken out further by area or subject. Tap any frame to view it full-size.</p>
+  </section>
+
+  <!-- category filter -->
+  <div style="position:sticky;top:65px;z-index:30;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line2)">
+    <div style="max-width:1320px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
+        <sc-for list="{{ catChips }}" as="c" hint-placeholder-count="7">
+          <button class="pf-chip" data-on="{{ c.on }}" onClick="{{ c.onClick }}">{{ c.label }}<span style="opacity:.5;margin-left:7px;font-family:'Space Mono',monospace;font-size:.78em">{{ c.count }}</span></button>
+        </sc-for>
+      </div>
+      <sc-if value="{{ hasSubs }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding-left:18px;border-left:1px solid var(--line)">
+          <span style="font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase">Sub</span>
+          <sc-for list="{{ subChips }}" as="s" hint-placeholder-count="3">
+            <button class="pf-sub" data-on="{{ s.on }}" onClick="{{ s.onClick }}">{{ s.label }}</button>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <!-- gallery body -->
+  <main style="max-width:1320px;margin:0 auto;padding:40px 28px 90px;min-height:50vh">
+    <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="2">
+      <section data-screen-label="{{ sec.catLabel }}" style="margin-bottom:54px">
+        <sc-if value="{{ sec.showCatHead }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--ink)">
+            <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:clamp(1.7rem,3vw,2.3rem);letter-spacing:-.01em">{{ sec.catLabel }}</h2>
+            <span style="font-family:'Space Mono',monospace;font-size:.66rem;color:var(--muted)">{{ sec.catCount }}</span>
+          </div>
+        </sc-if>
+
+        <sc-for list="{{ sec.groups }}" as="grp" hint-placeholder-count="2">
+          <div style="margin-bottom:30px">
+            <sc-if value="{{ grp.showSubHead }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+                <span style="font-family:'Space Mono',monospace;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">{{ grp.subLabel }}</span>
+                <span style="flex:1;height:1px;background:var(--line)"></span>
+                <span style="font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted)">{{ grp.count }}</span>
+              </div>
+            </sc-if>
+            <div class="pf-grid">
+              <sc-for list="{{ grp.items }}" as="ph" hint-placeholder-count="3">
+                <figure class="{{ ph.cls }}" data-reveal onClick="{{ ph.onOpen }}" role="button" tabindex="0" aria-label="{{ ph.caption }}" style="margin:0;position:relative;overflow:hidden;border-radius:10px;background:#E7E2D8;cursor:pointer;border:1px solid var(--line)">
+                  <img src="{{ ph.src }}" alt="{{ ph.caption }}" loading="lazy" onError="{{ onImgError }}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 1s cubic-bezier(.2,.7,.2,1)" style-hover="transform:scale(1.05)"/>
+                  <span data-ph style="display:none;position:absolute;inset:0;place-items:center;background:repeating-linear-gradient(45deg,#E7E2D8,#E7E2D8 11px,#DED8CC 11px,#DED8CC 22px);color:var(--muted)">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="opacity:.6"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></span>
+                  <sc-if value="{{ ph.video }}" hint-placeholder-val="{{ false }}">
+                    <span style="position:absolute;top:10px;right:10px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(21,17,11,.6);backdrop-filter:blur(3px)">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="#F6F3EC"><path d="M8 5v14l11-7z"/></svg></span>
+                  </sc-if>
+                  <span style="position:absolute;left:0;right:0;bottom:0;padding:26px 12px 11px;background:linear-gradient(180deg,transparent,rgba(21,17,11,.82));color:#F6F3EC;font-size:.8rem;font-weight:500;opacity:0;transition:opacity .3s" style-hover="opacity:1">{{ ph.caption }}</span>
+                </figure>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </section>
+    </sc-for>
+
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="text-align:center;padding:80px 20px;color:var(--muted)">
+        <div style="font-family:'Newsreader',serif;font-size:1.5rem;color:var(--ink2)">No photos in this category yet.</div>
+        <div style="font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.1em;margin-top:10px">CHECK BACK SOON</div>
+      </div>
+    </sc-if>
+  </main>
+
+  <!-- footer CTA -->
+  <footer style="background:var(--dark);color:rgba(246,243,236,.6);padding:56px 28px 40px">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap">
+        <div>
+          <div style="font-family:'Newsreader',serif;font-weight:400;font-size:clamp(1.5rem,3vw,2rem);color:#F6F3EC;max-width:24ch;line-height:1.1">Want your listing in the air?</div>
+          <div style="font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;color:rgba(246,243,236,.5);margin-top:12px"><a href="mailto:aerialphotova@gmail.com" style="color:inherit;text-decoration:none">aerialphotova@gmail.com</a> · 804-833-2476</div>
+        </div>
+        <a href="index.html#book" style="display:inline-flex;align-items:center;gap:.5em;background:var(--accent);color:#F6F3EC;text-decoration:none;font-weight:600;padding:15px 26px;border-radius:9px;transition:background .2s" style-hover="background:var(--accent-d)">Book a shoot
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div style="margin-top:32px;padding-top:20px;border-top:1px solid rgba(246,243,236,.12);font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:rgba(246,243,236,.45)">© {{ year }} AERIAL PHOTOGRAPHY · FAA PART 107 LICENSED · CENTRAL VIRGINIA</div>
+    </div>
+  </footer>
+
+  <!-- lightbox -->
+  <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;z-index:200;background:rgba(21,17,11,.94);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:30px">
+      <button onClick="{{ closeLightbox }}" aria-label="Close" style="position:absolute;top:20px;right:22px;width:46px;height:46px;border-radius:10px;border:1px solid rgba(246,243,236,.25);background:rgba(246,243,236,.06);color:#F6F3EC;cursor:pointer;display:grid;place-items:center" style-hover="background:rgba(246,243,236,.16)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <button onClick="{{ lightboxPrev }}" aria-label="Previous" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:12px;border:1px solid rgba(246,243,236,.25);background:rgba(246,243,236,.06);color:#F6F3EC;cursor:pointer;display:grid;place-items:center" style-hover="background:rgba(246,243,236,.16)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <figure onClick="{{ stop }}" style="margin:0;max-width:92vw;max-height:86vh;display:flex;flex-direction:column;align-items:center;gap:14px">
+        {{ lightboxImg }}
+        <figcaption style="font-family:'Space Mono',monospace;color:rgba(246,243,236,.75);font-size:.72rem;letter-spacing:.06em">{{ lightboxCaption }}</figcaption>
+      </figure>
+      <button onClick="{{ lightboxNext }}" aria-label="Next" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:12px;border:1px solid rgba(246,243,236,.25);background:rgba(246,243,236,.06);color:#F6F3EC;cursor:pointer;display:grid;place-items:center" style-hover="background:rgba(246,243,236,.16)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C1492B&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#C1492B&quot;,&quot;#D98A3D&quot;,&quot;#1F8A5B&quot;,&quot;#2A6FDB&quot;]}}">
+class Component extends DCLogic {
+  // ============================================================
+  // CATEGORIES — top-level filter tabs + folder names.
+  // id must match the folder under images/portfolio/<id>/.
+  // ============================================================
+  CATS = [
+    { id: "residential", label: "Residential" },
+    { id: "cityscape",   label: "Cityscape" },
+    { id: "landscape",   label: "Landscape & Nature" },
+    { id: "family",      label: "Family" },
+  ];
+
+  // ============================================================
+  // PHOTOS — the ONLY list to edit. One line per photo.
+  //   cat   : category id (required, must match CATS above)
+  //   sub   : sub-category name (OPTIONAL). Same (cat, sub) groups
+  //           together under a sub-heading. A category with 2+ subs
+  //           also surfaces secondary filter chips.
+  //   wide  : true => full-row panorama tile
+  //   video : true => play badge (future MP4 tile)
+  // Missing files fall back to a clean placeholder. Captions neutral.
+  //
+  // Folders live at images/portfolio/<cat>/. These are the owner's real
+  // photos, wired from the master library (Photos/) via optimize_photos.py.
+  // ============================================================
+  PHOTOS = [
+    // — Cityscape — sub-category: Richmond Area
+    { src: "images/portfolio/cityscape/richmond-01.jpg", caption: "Richmond skyline & James River · Central Virginia", cat: "cityscape", sub: "Richmond Area", wide: true },
+    { src: "images/portfolio/cityscape/richmond-02.jpg", caption: "Downtown Richmond · Central Virginia",               cat: "cityscape", sub: "Richmond Area" },
+    { src: "images/portfolio/cityscape/richmond-03.jpg", caption: "Richmond from above · Central Virginia",             cat: "cityscape", sub: "Richmond Area" },
+    { src: "images/portfolio/cityscape/richmond-04.jpg", caption: "City & river · Richmond",                            cat: "cityscape", sub: "Richmond Area" },
+    { src: "images/portfolio/cityscape/richmond-05.jpg", caption: "Bridges & skyline · Richmond",                       cat: "cityscape", sub: "Richmond Area" },
+    { src: "images/portfolio/cityscape/richmond-06.jpg", caption: "Downtown from above · Richmond",                     cat: "cityscape", sub: "Richmond Area" },
+    { src: "images/portfolio/cityscape/richmond-07.jpg", caption: "Richmond at golden hour · Central Virginia",         cat: "cityscape", sub: "Richmond Area" },
+
+    // — Landscape & Nature — sub-categories: Landscape / Animals
+    { src: "images/portfolio/landscape/nature-01.jpg",  caption: "Farmland & fields · Central Virginia", cat: "landscape", sub: "Landscape" },
+    { src: "images/portfolio/landscape/nature-02.jpg",  caption: "Open countryside · Central Virginia",  cat: "landscape", sub: "Landscape" },
+    { src: "images/portfolio/landscape/river-01.jpg",   caption: "River at dusk · Central Virginia",     cat: "landscape", sub: "Landscape" },
+    { src: "images/portfolio/landscape/river-02.jpg",   caption: "River bend · Central Virginia",        cat: "landscape", sub: "Landscape" },
+    { src: "images/portfolio/landscape/river-03.jpg",   caption: "Along the water · Central Virginia",   cat: "landscape", sub: "Landscape" },
+    { src: "images/portfolio/landscape/animals-01.jpg", caption: "Wildlife · Central Virginia",          cat: "landscape", sub: "Animals" },
+    { src: "images/portfolio/landscape/animals-02.jpg", caption: "Wildlife · Central Virginia",          cat: "landscape", sub: "Animals" },
+    { src: "images/portfolio/landscape/animals-03.jpg", caption: "Wildlife · Central Virginia",          cat: "landscape", sub: "Animals" },
+    { src: "images/portfolio/landscape/animals-04.jpg", caption: "Wildlife · Central Virginia",          cat: "landscape", sub: "Animals" },
+
+    // — Family —
+    { src: "images/portfolio/family/family-01.jpg", caption: "Family session · Central Virginia", cat: "family" },
+  ];
+
+  state = { cat: "all", sub: "all", lightbox: null };
+
+  componentDidMount() {
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (this.root) {
+      if (this.props.accent) { this.root.style.setProperty('--accent', this.props.accent); this.root.style.setProperty('--accent-d', this.props.accent); }
+      if (this.reduced) this.root.classList.add('reduced');
+      this.root.classList.add('js-reveal');
+      this.revealAll();
+    }
+    this._onKey = (e) => {
+      if (this.state.lightbox == null) return;
+      if (e.key === 'Escape') this.closeLightbox();
+      else if (e.key === 'ArrowRight') this.shift(1);
+      else if (e.key === 'ArrowLeft') this.shift(-1);
+    };
+    window.addEventListener('keydown', this._onKey);
+  }
+
+  componentDidUpdate() { this.revealAll(); }
+
+  componentWillUnmount() {
+    if (this._io) this._io.disconnect();
+    if (this._revealFallback) clearTimeout(this._revealFallback);
+    if (this._onKey) window.removeEventListener('keydown', this._onKey);
+    document.body.style.overflow = '';
+  }
+
+  revealAll() {
+    if (!this.root) return;
+    const items = Array.from(this.root.querySelectorAll('[data-reveal]:not(.in)'));
+    if (this.reduced || !('IntersectionObserver' in window)) { items.forEach(el => el.classList.add('in')); return; }
+    const vh = window.innerHeight || 800;
+    items.forEach(el => { if (el.getBoundingClientRect().top < vh - 30) el.classList.add('in'); });
+    if (!this._io) {
+      this._io = new IntersectionObserver((es) => {
+        es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); this._io.unobserve(e.target); } });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    }
+    items.forEach(el => { if (!el.classList.contains('in')) this._io.observe(el); });
+    if (this._revealFallback) clearTimeout(this._revealFallback);
+    this._revealFallback = setTimeout(() => { this.root.querySelectorAll('[data-reveal]:not(.in)').forEach(el => el.classList.add('in')); }, 1500);
+  }
+
+  visiblePhotos() {
+    const { cat, sub } = this.state;
+    let list = cat === 'all' ? this.PHOTOS.slice() : this.PHOTOS.filter(p => p.cat === cat);
+    if (cat !== 'all' && sub !== 'all') list = list.filter(p => (p.sub || '') === sub);
+    return list;
+  }
+
+  subsFor(catId) {
+    const seen = [];
+    this.PHOTOS.filter(p => p.cat === catId).forEach(p => { if (p.sub && !seen.includes(p.sub)) seen.push(p.sub); });
+    return seen;
+  }
+
+  selectCat(id) { this.setState({ cat: id, sub: 'all' }); }
+  selectSub(s) { this.setState({ sub: s }); }
+
+  openLightbox(idx) { this.setState({ lightbox: idx }); document.body.style.overflow = 'hidden'; }
+  closeLightbox() { this.setState({ lightbox: null }); document.body.style.overflow = ''; }
+  shift(d) {
+    const vis = this.visiblePhotos();
+    this.setState(s => s.lightbox == null ? null : { lightbox: (s.lightbox + d + vis.length) % vis.length });
+  }
+
+  renderVals() {
+    const { cat, sub, lightbox } = this.state;
+    const vis = this.visiblePhotos();
+    const idxOf = new Map();
+    vis.forEach((p, i) => idxOf.set(p, i));
+
+    const catChips = [{ id: 'all', label: 'All work', count: this.PHOTOS.length }]
+      .concat(this.CATS.map(c => ({ id: c.id, label: c.label, count: this.PHOTOS.filter(p => p.cat === c.id).length })))
+      .filter(c => c.id === 'all' || c.count > 0)
+      .map(c => ({ label: c.label, count: c.count, on: cat === c.id ? '1' : '0', onClick: () => this.selectCat(c.id) }));
+
+    const subs = cat === 'all' ? [] : this.subsFor(cat);
+    const hasSubs = subs.length >= 2;
+    const subChips = hasSubs ? [{ name: 'all', label: 'All' }].concat(subs.map(s => ({ name: s, label: s })))
+      .map(s => ({ label: s.label, on: sub === s.name ? '1' : '0', onClick: () => this.selectSub(s.name) })) : [];
+
+    const sections = [];
+    const cats = cat === 'all' ? this.CATS.map(c => c.id) : [cat];
+    cats.forEach(cid => {
+      let inCat = this.PHOTOS.filter(p => p.cat === cid);
+      if (cat !== 'all' && sub !== 'all') inCat = inCat.filter(p => (p.sub || '') === sub);
+      if (!inCat.length) return;
+      const catMeta = this.CATS.find(c => c.id === cid);
+      const order = []; const map = {};
+      inCat.forEach(p => { const key = p.sub || '__none'; if (!map[key]) { map[key] = []; order.push(key); } map[key].push(p); });
+      const multiSub = order.filter(k => k !== '__none').length >= 1 && (order.length > 1 || order[0] !== '__none');
+      const groups = order.map(key => ({
+        subLabel: key === '__none' ? '' : key,
+        showSubHead: key !== '__none' && multiSub,
+        count: map[key].length + (map[key].length === 1 ? ' photo' : ' photos'),
+        items: map[key].map(p => ({
+          src: p.src, caption: p.caption, video: !!p.video,
+          cls: p.wide ? 'g-wide' : '',
+          onOpen: () => this.openLightbox(idxOf.get(p)),
+        })),
+      }));
+      sections.push({
+        catLabel: catMeta ? catMeta.label : cid,
+        catCount: inCat.length + (inCat.length === 1 ? ' photo' : ' photos'),
+        showCatHead: cat === 'all',
+        groups,
+      });
+    });
+
+    return {
+      rootRef: (el) => { this.root = el; },
+      year: String(new Date().getFullYear()),
+      catChips, subChips, hasSubs,
+      sections, isEmpty: sections.length === 0,
+      onImgError: (e) => { const t = e.target; t.style.display = 'none'; const ph = t.parentNode && t.parentNode.querySelector('[data-ph]'); if (ph) ph.style.display = 'grid'; },
+      lightboxOpen: lightbox != null,
+      lightboxCaption: lightbox != null && vis[lightbox] ? vis[lightbox].caption : '',
+      lightboxImg: (lightbox != null && vis[lightbox]) ? React.createElement('img', { src: vis[lightbox].src, alt: vis[lightbox].caption, style: { maxWidth: '92vw', maxHeight: '78vh', objectFit: 'contain', borderRadius: '6px', boxShadow: '0 30px 80px rgba(0,0,0,.6)' } }) : null,
+      closeLightbox: () => this.closeLightbox(),
+      lightboxNext: () => this.shift(1),
+      lightboxPrev: () => this.shift(-1),
+      stop: (e) => e.stopPropagation(),
+    };
+  }
+}
+</script>
+</body>
+</html>

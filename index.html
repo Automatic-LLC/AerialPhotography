@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#F6F3EC}
+  @keyframes gaFadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+  @keyframes gaDrift{0%{transform:scale(1.12) translate3d(0,0,0)}100%{transform:scale(1.2) translate3d(-2%,-1.2%,0)}}
+  @keyframes gaDash{from{stroke-dashoffset:1200}to{stroke-dashoffset:0}}
+  @keyframes gaPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+  @keyframes gaBob{0%,100%{transform:translateY(0)}50%{transform:translateY(9px)}}
+  .js-reveal [data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .85s cubic-bezier(.2,.7,.2,1),transform .85s cubic-bezier(.2,.7,.2,1)}
+  .js-reveal [data-reveal].in{opacity:1 !important;transform:none !important}
+  .js-reveal [data-reveal][data-d="1"]{transition-delay:.09s}
+  .js-reveal [data-reveal][data-d="2"]{transition-delay:.18s}
+  .js-reveal [data-reveal][data-d="3"]{transition-delay:.27s}
+  .reduced [data-reveal]{opacity:1!important;transform:none!important;transition:none}
+  .reduced [data-anim]{animation:none!important}
+  .ga-gallery{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  .ga-tile{grid-column:span 4;aspect-ratio:16/9}
+  .ga-tile.wide{grid-column:span 12;aspect-ratio:2.7/1}
+  @media(max-width:900px){.ga-tile{grid-column:span 6}.ga-tile.wide{aspect-ratio:2.3/1}}
+  @media(max-width:560px){.ga-tile{grid-column:span 12;aspect-ratio:16/10}.ga-tile.wide{aspect-ratio:16/10}}
+  .ga-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:860px){.ga-3{grid-template-columns:1fr}}
+  .ga-price{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+  @media(max-width:860px){.ga-price{grid-template-columns:1fr}}
+  .ga-pkg{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px;transition:transform .25s,border-color .25s,box-shadow .25s}
+  .ga-pkg:hover{transform:translateY(-5px);border-color:var(--ink)}
+  .ga-pkg.pop{border:2px solid var(--accent);box-shadow:0 24px 56px rgba(193,73,43,.16)}
+  .ga-pkg.pop:hover{transform:translateY(-7px);border-color:var(--accent)}
+  .ga-pkg-badge{position:absolute;top:-12px;left:30px;background:var(--accent);color:#F6F3EC;font-family:'Space Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border-radius:6px}
+  .ga-pkg-name{margin:0 0 14px;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .ga-pkg.pop .ga-pkg-name{color:var(--accent)}
+  .ga-pkg-blab{margin:0 0 5px;font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .ga-pkg-best{margin:0 0 20px;color:var(--ink2);font-size:.96rem;line-height:1.45;min-height:72px}
+  @media(max-width:860px){.ga-pkg-best{min-height:0;margin-bottom:16px}}
+  .ga-pkg-price{margin:0;font-family:'Newsreader',serif;font-weight:500;font-size:2.7rem;letter-spacing:-.01em;color:var(--ink)}
+  .ga-pkg-unit{font-size:.9rem;color:var(--muted);font-family:'Hanken Grotesk',sans-serif;font-weight:500}
+  .ga-pkg-feat{list-style:none;margin:18px 0 24px;padding:18px 0 0;border-top:1px solid var(--line2);display:flex;flex-direction:column;gap:11px}
+  .ga-pkg-feat li{display:flex;align-items:flex-start;gap:10px;color:var(--ink);font-size:.98rem}
+  .ga-pkg-feat li::before{content:'✓';font-weight:700;color:var(--accent);flex:none;line-height:1.4}
+  .ga-pkg-feat li.no{color:var(--muted)}
+  .ga-pkg-feat li.no::before{content:'—';color:var(--muted)}
+  .ga-pkg-cta{margin-top:auto;text-align:center;text-decoration:none;font-weight:600;font-size:.96rem;padding:14px;border-radius:9px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink);font-family:inherit;transition:background .2s,transform .18s}
+  .ga-pkg-cta:hover{background:var(--paper-2)}
+  .ga-pkg.pop .ga-pkg-cta{background:var(--accent);color:#F6F3EC;border-color:var(--accent)}
+  .ga-pkg.pop .ga-pkg-cta:hover{background:var(--accent-d)}
+  .ga-addons{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+  @media(max-width:860px){.ga-addons{grid-template-columns:1fr}}
+  .ga-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:680px){.ga-2{grid-template-columns:1fr}}
+  .ga-form2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:600px){.ga-form2{grid-template-columns:1fr}}
+  .ga-navlinks{display:flex;gap:26px;align-items:center}
+  @media(max-width:820px){.ga-navlinks a:not([data-cta]){display:none}}
+  .ga-field{width:100%;font-family:'Hanken Grotesk',sans-serif;font-size:.98rem;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:13px 14px;transition:border-color .2s,box-shadow .2s}
+  .ga-field:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+  .ga-field::placeholder{color:var(--muted)}
+  label.ga-lab{display:block;font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  html{scroll-behavior:smooth}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</helmet>
+
+<div ref="{{ rootRef }}" style="--paper:#F6F3EC;--paper-2:#EFEADE;--ink:#1A1611;--ink2:#6E665B;--muted:#9A9082;--line:rgba(26,22,17,.14);--line2:rgba(26,22,17,.07);--accent:#C1492B;--accent-d:#9C3A22;--gold:#D98A3D;--dark:#15110B;background:var(--paper);color:var(--ink);font-family:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden">
+
+  <!-- ===================== HEADER ===================== -->
+  <header style="position:sticky;top:0;z-index:100;background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line2)">
+    <div style="max-width:1180px;margin:0 auto;padding:0 28px;height:70px;display:flex;align-items:center;justify-content:space-between">
+      <a href="#top" style="display:flex;align-items:center;gap:11px;color:var(--ink);text-decoration:none;line-height:1.05">
+        <span style="width:32px;height:32px;border-radius:9px;flex:none;display:grid;place-items:center;background:var(--accent);color:#F6F3EC">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+        </span>
+        <span>
+          <span style="display:block;font-family:'Newsreader',Georgia,serif;font-weight:500;font-size:1.12rem;letter-spacing:.01em">Aerial Photography</span>
+          <span style="display:block;font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:2px">FAA Part 107 Licensed · Central Virginia</span>
+        </span>
+      </a>
+      <nav class="ga-navlinks">
+        <a href="#specialties" style="color:var(--ink2);text-decoration:none;font-weight:500;font-size:.9rem" style-hover="color:var(--ink)">What I shoot</a>
+        <a href="#work" style="color:var(--ink2);text-decoration:none;font-weight:500;font-size:.9rem" style-hover="color:var(--ink)">Work</a>
+        <a href="#why" style="color:var(--ink2);text-decoration:none;font-weight:500;font-size:.9rem" style-hover="color:var(--ink)">Why aerials</a>
+        <a href="#pricing" style="color:var(--ink2);text-decoration:none;font-weight:500;font-size:.9rem" style-hover="color:var(--ink)">Pricing</a>
+        <a href="portfolio.html" style="color:var(--ink2);text-decoration:none;font-weight:500;font-size:.9rem" style-hover="color:var(--ink)">Portfolio</a>
+        <a data-cta href="#book" style="background:var(--accent);color:#F6F3EC;text-decoration:none;font-weight:600;font-size:.88rem;padding:10px 18px;border-radius:7px;transition:background .2s" style-hover="background:var(--accent-d)">Book a shoot</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== HERO ===================== -->
+  <span id="top"></span>
+  <section data-screen-label="Hero" style="position:relative;min-height:100vh;overflow:hidden;display:flex;align-items:flex-end;background:var(--dark)">
+    <div data-hero-bg style="position:absolute;inset:-12% 0;z-index:0;will-change:transform">
+      <div data-anim style="position:absolute;inset:0;background:url('images/aerial-01.jpg') center 42%/cover;transform:scale(1.12);animation:gaDrift 36s ease-in-out infinite alternate"></div>
+    </div>
+    <div style="position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(21,17,11,.5) 0%,rgba(21,17,11,.12) 30%,rgba(21,17,11,.42) 66%,rgba(21,17,11,.86) 90%,var(--paper) 100%)"></div>
+    <div data-anim style="position:absolute;inset:0;z-index:1;background:radial-gradient(900px 520px at 16% 78%,rgba(217,138,61,.32),transparent 60%)"></div>
+    <svg viewBox="0 0 1440 800" preserveAspectRatio="none" aria-hidden="true" style="position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none">
+      <path data-anim d="M-60,640 C 340,540 540,380 760,312 C 980,243 1200,150 1520,118" fill="none" stroke="rgba(245,233,210,.5)" stroke-width="1.3" style="stroke-dasharray:1200;stroke-dashoffset:1200;animation:gaDash 4.2s cubic-bezier(.4,0,.1,1) .3s forwards"/>
+      <circle data-anim cx="760" cy="312" r="4.5" fill="#F3D9A8" style="transform-box:fill-box;transform-origin:center;animation:gaPulse 3.2s ease-in-out 4s infinite"/>
+    </svg>
+
+    <div style="position:relative;z-index:3;max-width:1180px;margin:0 auto;padding:120px 28px 92px;width:100%">
+      <div style="max-width:820px">
+        <p data-anim style="margin:0 0 20px;font-family:'Space Mono',monospace;font-size:.68rem;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:#F3D9A8;display:inline-flex;align-items:center;gap:11px;animation:gaFadeUp .9s both .1s"><span style="width:28px;height:1px;background:#F3D9A8"></span>Drone photography &amp; video · FAA Part 107 Licensed</p>
+        <h1 data-anim style="margin:0;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:clamp(2.8rem,7vw,5.6rem);line-height:1;letter-spacing:-.02em;color:#FBF7EF;text-wrap:balance;animation:gaFadeUp 1s both .24s">See it all — <em style="font-style:italic;color:#F3D9A8">from above.</em></h1>
+        <p data-anim style="margin:28px 0 0;font-size:clamp(1.08rem,1.7vw,1.28rem);line-height:1.55;color:#E7DECB;max-width:580px;text-wrap:pretty;animation:gaFadeUp 1s both .4s">Aerial photos and video that show the whole site — the layout, the land, and everything around it — context the ground can't capture. For homes, businesses, events, and land across Central Virginia.</p>
+        <div data-anim style="display:flex;gap:13px;flex-wrap:wrap;margin-top:36px;animation:gaFadeUp 1s both .56s">
+          <a href="#book" style="display:inline-flex;align-items:center;gap:.5em;background:var(--accent);color:#F6F3EC;text-decoration:none;font-weight:600;font-size:1.02rem;padding:16px 28px;border-radius:9px;box-shadow:0 14px 36px rgba(193,73,43,.4);transition:transform .18s,box-shadow .18s,background .18s" style-hover="transform:translateY(-2px);box-shadow:0 20px 44px rgba(193,73,43,.5);background:var(--accent-d)">Book a shoot
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="#work" style="display:inline-flex;align-items:center;gap:.5em;background:rgba(246,243,236,.1);color:#FBF7EF;text-decoration:none;font-weight:600;font-size:1.02rem;padding:16px 28px;border-radius:9px;border:1px solid rgba(246,243,236,.32);backdrop-filter:blur(6px);transition:border-color .18s,background .18s" style-hover="border-color:#F3D9A8;background:rgba(246,243,236,.18)">See the work</a>
+        </div>
+      </div>
+    </div>
+
+    <div data-anim style="position:absolute;left:50%;bottom:30px;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:7px;color:#D8CDB6;animation:gaBob 2.6s ease-in-out infinite">
+      <span style="font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase">Scroll</span>
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+    </div>
+  </section>
+
+  <!-- ===================== SPECIALTIES ===================== -->
+  <section id="specialties" style="padding:112px 28px;background:var(--paper)">
+    <div style="max-width:1180px;margin:0 auto">
+      <div data-reveal style="max-width:700px;margin:0 0 48px">
+        <p style="margin:0 0 16px;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)">Specialties</p>
+        <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:clamp(2rem,4.2vw,3.1rem);line-height:1.05;letter-spacing:-.015em;color:var(--ink)">What I shoot</h2>
+        <p style="margin:18px 0 0;font-size:1.1rem;color:var(--ink2);text-wrap:pretty">From single sites and open acreage to events and downtown blocks. Each area is organized further in the portfolio.</p>
+      </div>
+      <!-- ============================================================
+           SPECIALTIES — driven by the SPECIALTIES list in the logic.
+           Mirrors the portfolio categories + sub-categories.
+           ============================================================ -->
+      <div class="ga-3">
+        <sc-for list="{{ specialties }}" as="sp" hint-placeholder-count="6">
+          <a href="{{ sp.href }}" data-reveal style="display:flex;flex-direction:column;text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;transition:transform .25s,border-color .25s,box-shadow .25s" style-hover="transform:translateY(-4px);border-color:var(--accent);box-shadow:0 16px 38px rgba(26,22,17,.08)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+              <span style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--accent)">{{ sp.idx }}</span>
+              <span style="color:var(--muted);display:grid;place-items:center" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg></span>
+            </div>
+            <h3 style="margin:0 0 6px;font-family:'Newsreader',serif;font-weight:500;font-size:1.4rem;color:var(--ink)">{{ sp.label }}</h3>
+            <p style="margin:0 0 16px;color:var(--ink2);font-size:.98rem">{{ sp.desc }}</p>
+            <sc-if value="{{ sp.hasSubs }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:auto;display:flex;flex-wrap:wrap;gap:7px;padding-top:14px;border-top:1px solid var(--line2)">
+                <sc-for list="{{ sp.subs }}" as="s" hint-placeholder-count="2">
+                  <span style="font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.06em;color:var(--accent-d);background:color-mix(in srgb,var(--accent) 12%,transparent);padding:4px 10px;border-radius:20px">{{ s }}</span>
+                </sc-for>
+              </div>
+            </sc-if>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WORK / GALLERY ===================== -->
+  <section id="work" style="padding:112px 28px;background:var(--paper-2);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)">
+    <div style="max-width:1180px;margin:0 auto">
+      <div data-reveal style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:40px">
+        <div style="max-width:640px">
+          <p style="margin:0 0 16px;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)">Recent work</p>
+          <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:clamp(2rem,4.2vw,3.1rem);line-height:1.05;letter-spacing:-.015em;color:var(--ink)">Aerial coverage</h2>
+          <p style="margin:14px 0 0;font-size:1.08rem;color:var(--ink2)">A look at recent shoots across Central Virginia. Tap any frame to view it full-size.</p>
+        </div>
+        <a href="portfolio.html" style="flex:none;display:inline-flex;align-items:center;gap:.5em;color:var(--ink);text-decoration:none;font-weight:600;font-size:.92rem;border-bottom:1.5px solid var(--accent);padding-bottom:3px">Full portfolio
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+
+      <!-- ============================================================
+           GALLERY — driven entirely by the GALLERY list in the logic.
+           Add a photo: drop a JPG in /images and add ONE line there.
+           wide:true = panorama feature tile. Missing files fall back to
+           a clean placeholder. Captions stay neutral (location only).
+           ============================================================ -->
+      <div class="ga-gallery">
+        <sc-for list="{{ gallery }}" as="item" hint-placeholder-count="8">
+          <figure class="{{ item.gridClass }}" data-reveal onClick="{{ item.onOpen }}" role="button" tabindex="0" aria-label="{{ item.caption }}" style="margin:0;position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#E7E2D8;cursor:pointer;transition:border-color .3s,box-shadow .3s,transform .3s" style-hover="border-color:var(--accent);box-shadow:0 18px 44px rgba(26,22,17,.16);transform:translateY(-3px)">
+            <img src="{{ item.src }}" alt="{{ item.caption }}" loading="lazy" onError="{{ onImgError }}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 1s cubic-bezier(.2,.7,.2,1)" style-hover="transform:scale(1.06)"/>
+            <div data-ph style="display:none;position:absolute;inset:0;place-items:center;background:repeating-linear-gradient(45deg,#E7E2D8,#E7E2D8 11px,#DED8CC 11px,#DED8CC 22px);color:var(--muted)">
+              <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.55"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+            <figcaption style="position:absolute;left:0;right:0;bottom:0;padding:30px 16px 13px;background:linear-gradient(180deg,transparent,rgba(21,17,11,.82));color:#F6F3EC;font-size:.82rem;font-weight:500;opacity:0;transition:opacity .3s" style-hover="opacity:1">{{ item.caption }}</figcaption>
+          </figure>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WHY AERIALS ===================== -->
+  <section id="why" style="padding:112px 28px;background:var(--paper)">
+    <div style="max-width:1180px;margin:0 auto">
+      <div data-reveal style="max-width:700px;margin:0 auto 54px;text-align:center">
+        <p style="margin:0 0 16px;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)">Why aerials</p>
+        <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:clamp(2rem,4.2vw,3.1rem);line-height:1.05;letter-spacing:-.015em;color:var(--ink);text-wrap:balance">What the ground can't show</h2>
+        <p style="margin:18px 0 0;font-size:1.1rem;color:var(--ink2);text-wrap:pretty">A few well-framed aerial shots give people something a standard photo set leaves out — a real sense of the place and where it sits.</p>
+      </div>
+      <div class="ga-3">
+        <div data-reveal data-d="1" style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;transition:transform .25s,border-color .25s,box-shadow .25s" style-hover="transform:translateY(-5px);border-color:var(--accent);box-shadow:0 18px 40px rgba(26,22,17,.08)">
+          <div style="width:46px;height:46px;border-radius:12px;display:grid;place-items:center;margin-bottom:22px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <h3 style="margin:0 0 10px;font-family:'Newsreader',serif;font-weight:500;font-size:1.34rem;color:var(--ink)">The full picture</h3>
+          <p style="margin:0;color:var(--ink2);font-size:1.02rem;text-wrap:pretty">Show the whole site in one frame — the buildings, grounds, access, and how it all fits together.</p>
+        </div>
+        <div data-reveal data-d="2" style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;transition:transform .25s,border-color .25s,box-shadow .25s" style-hover="transform:translateY(-5px);border-color:var(--accent);box-shadow:0 18px 40px rgba(26,22,17,.08)">
+          <div style="width:46px;height:46px;border-radius:12px;display:grid;place-items:center;margin-bottom:22px;background:color-mix(in srgb,var(--gold) 16%,transparent);color:var(--gold)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+          <h3 style="margin:0 0 10px;font-family:'Newsreader',serif;font-weight:500;font-size:1.34rem;color:var(--ink)">The surroundings</h3>
+          <p style="margin:0;color:var(--ink2);font-size:1.02rem;text-wrap:pretty">Trees, water, roads, and what's nearby — the context that helps people understand the place at a glance.</p>
+        </div>
+        <div data-reveal data-d="3" style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;transition:transform .25s,border-color .25s,box-shadow .25s" style-hover="transform:translateY(-5px);border-color:var(--accent);box-shadow:0 18px 40px rgba(26,22,17,.08)">
+          <div style="width:46px;height:46px;border-radius:12px;display:grid;place-items:center;margin-bottom:22px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6 4 4 6-8"/><path d="M4 21h16"/></svg></div>
+          <h3 style="margin:0 0 10px;font-family:'Newsreader',serif;font-weight:500;font-size:1.34rem;color:var(--ink)">Work that stands out</h3>
+          <p style="margin:0;color:var(--ink2);font-size:1.02rem;text-wrap:pretty">A strong aerial leads the set and gives your photos a look that feels considered — without overstating anything.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRICING ===================== -->
+  <section id="pricing" style="padding:112px 28px;background:var(--paper-2);border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)">
+    <div style="max-width:1180px;margin:0 auto">
+      <div data-reveal style="max-width:700px;margin:0 auto 48px;text-align:center">
+        <p style="margin:0 0 16px;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)">Simple, honest pricing</p>
+        <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:clamp(2rem,4.2vw,3.1rem);line-height:1.05;letter-spacing:-.015em;color:var(--ink)">Pick your coverage</h2>
+        <p style="margin:16px 0 0;font-size:1.08rem;color:var(--ink2);text-wrap:pretty">Every package includes all the photos from your session, with a set number professionally edited — delivered within 24–48 hours. No hidden fees.</p>
+      </div>
+
+      <!-- ============================================================
+           PRICING — comparison grid driven by the PACKAGES list in the
+           logic below. Edit prices/photos/video/copy there (one place).
+           Prices are launch prices (see notes/PRICING_SPEC.md).
+           ============================================================ -->
+      <div class="ga-price">
+        <sc-for list="{{ packages }}" as="p" hint-placeholder-count="3">
+          <div data-reveal class="{{ p.cardClass }}">
+            <sc-if value="{{ p.popular }}" hint-placeholder-val="{{ false }}">
+              <span class="ga-pkg-badge">Most popular</span>
+            </sc-if>
+            <p class="ga-pkg-name">{{ p.name }}</p>
+            <p class="ga-pkg-blab">Best for</p>
+            <p class="ga-pkg-best">{{ p.bestFor }}</p>
+            <div class="ga-pkg-price">{{ p.price }} <span class="ga-pkg-unit">{{ p.unit }}</span></div>
+            <ul class="ga-pkg-feat">
+              <sc-for list="{{ p.features }}" as="f" hint-placeholder-count="4">
+                <li class="{{ f.cls }}">{{ f.t }}</li>
+              </sc-for>
+            </ul>
+            <button class="ga-pkg-cta" onClick="{{ p.onBook }}">{{ p.cta }}</button>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- MONTHLY PLAN — separate model (subscription) -->
+      <div data-reveal style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;background:var(--dark);color:#F6F3EC;border-radius:18px;padding:28px 32px">
+        <div style="max-width:60ch">
+          <p style="margin:0 0 7px;font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#F3D9A8">Monthly plan · recurring</p>
+          <p style="margin:0 0 5px;font-family:'Newsreader',serif;font-weight:500;font-size:1.55rem">4 shoots a month, each with a 30-second video</p>
+          <p style="margin:0;color:rgba(246,243,236,.72);font-size:.96rem;text-wrap:pretty">Priority scheduling · delivered within 24–48 hours · best for real estate agents, property managers, and anyone booking more than once a month.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+          <span style="font-family:'Newsreader',serif;font-weight:500;font-size:2.1rem">$399<span style="font-size:.9rem;color:rgba(246,243,236,.6)">/mo</span></span>
+          <button class="ga-pkg-cta" style="margin-top:0;background:var(--accent);color:#F6F3EC;border-color:var(--accent);padding:14px 26px" onClick="{{ bookMonthly }}">Start monthly</button>
+        </div>
+      </div>
+
+      <!-- ADD-ONS — apply to any package -->
+      <div class="ga-addons">
+        <div data-reveal style="background:#fff;border:1px dashed var(--line);border-radius:14px;padding:20px 22px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span style="font-weight:600;color:var(--ink)">60-second aerial video</span><span style="font-family:'Newsreader',serif;font-size:1.2rem;color:var(--accent)">+$30</span></div>
+          <p style="margin:6px 0 0;color:var(--ink2);font-size:.9rem">Add a video to any Essential shoot without upgrading.</p>
+        </div>
+        <div data-reveal data-d="1" style="background:#fff;border:1px dashed var(--line);border-radius:14px;padding:20px 22px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span style="font-weight:600;color:var(--ink)">Same-day rush delivery</span><span style="font-family:'Newsreader',serif;font-size:1.2rem;color:var(--accent)">+$20</span></div>
+          <p style="margin:6px 0 0;color:var(--ink2);font-size:.9rem">Bumps delivery to same day, subject to availability.</p>
+        </div>
+        <div data-reveal data-d="2" style="background:#fff;border:1px dashed var(--line);border-radius:14px;padding:20px 22px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span style="font-weight:600;color:var(--ink)">Custom scope</span><a href="mailto:aerialphotova@gmail.com" style="font-family:'Space Mono',monospace;font-size:.74rem;color:var(--accent);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:1px">Contact</a></div>
+          <p style="margin:6px 0 0;color:var(--ink2);font-size:.9rem">Large sites, multi-location, or special requirements — reach out for a quote.</p>
+        </div>
+      </div>
+
+      <p data-reveal style="margin:26px 0 0;text-align:center;color:var(--ink2);font-size:1rem;text-wrap:pretty">Not sure which package fits? <a href="mailto:aerialphotova@gmail.com" style="color:var(--accent);text-decoration:none;border-bottom:1.5px solid var(--accent);padding-bottom:1px">Contact me</a> and I'll tell you what I'd recommend.</p>
+    </div>
+  </section>
+
+  <!-- ===================== BOOK (custom request form) ===================== -->
+  <section id="book" data-screen-label="Book" style="padding:112px 28px;background:var(--paper)">
+    <div style="max-width:1180px;margin:0 auto">
+      <div data-reveal style="max-width:700px;margin:0 auto 44px;text-align:center">
+        <p style="margin:0 0 16px;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)">Book a shoot</p>
+        <h2 style="margin:0;font-family:'Newsreader',serif;font-weight:400;font-size:clamp(2rem,4.2vw,3.1rem);line-height:1.05;letter-spacing:-.015em;color:var(--ink)">Let's get your shoot in the air</h2>
+        <p style="margin:16px 0 0;font-size:1.08rem;color:var(--ink2);text-wrap:pretty">Send the address and a window that works. I'll confirm the date and get you edited photos ready to share.</p>
+      </div>
+
+      <div data-reveal style="max-width:760px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 26px 64px rgba(26,22,17,.1);overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:18px 28px;border-bottom:1px solid var(--line2);background:var(--paper)">
+          <span style="display:flex;align-items:center;gap:9px;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)"><span style="width:7px;height:7px;border-radius:50%;background:var(--accent)"></span>Booking request</span>
+          <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:.84rem">
+            <a href="mailto:aerialphotova@gmail.com" style="color:var(--ink2);text-decoration:none" style-hover="color:var(--accent)">aerialphotova@gmail.com</a>
+            <a href="tel:+18048332476" style="color:var(--ink2);text-decoration:none" style-hover="color:var(--accent)">804-833-2476</a>
+          </div>
+        </div>
+
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:56px 32px;text-align:center">
+            <div style="width:58px;height:58px;border-radius:50%;margin:0 auto 22px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+            <h3 style="margin:0 0 10px;font-family:'Newsreader',serif;font-weight:500;font-size:1.7rem;color:var(--ink)">Request sent</h3>
+            <p style="margin:0 auto;max-width:42ch;color:var(--ink2);text-wrap:pretty">Thanks — your details opened in my booking form to finish. I'll email to confirm the date. <strong style="color:var(--ink)">Check your spam/junk folder</strong> just in case and mark it "not spam."</p>
+            <button onClick="{{ resetForm }}" style="margin-top:24px;background:transparent;color:var(--accent);border:1px solid var(--accent);font-weight:600;font-size:.9rem;padding:11px 22px;border-radius:9px;cursor:pointer;transition:background .2s" style-hover="background:color-mix(in srgb,var(--accent) 10%,transparent)">Send another request</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <form ref="{{ formRef }}" onSubmit="{{ onSubmit }}" style="padding:28px">
+            <div class="ga-form2">
+              <div><label class="ga-lab" for="ga-name">Your name</label><input class="ga-field" id="ga-name" name="name" type="text" required placeholder="Jane Agent"/></div>
+              <div><label class="ga-lab" for="ga-email">Email</label><input class="ga-field" id="ga-email" name="email" type="email" required placeholder="you@brokerage.com"/></div>
+            </div>
+            <div class="ga-form2" style="margin-top:14px">
+              <div><label class="ga-lab" for="ga-phone">Phone</label><input class="ga-field" id="ga-phone" name="phone" type="tel" placeholder="804-555-0123"/></div>
+              <div><label class="ga-lab" for="ga-address">Property address</label><input class="ga-field" id="ga-address" name="address" type="text" required placeholder="123 Main St, Richmond VA"/></div>
+            </div>
+            <div class="ga-form2" style="margin-top:14px">
+              <div><label class="ga-lab" for="ga-package">Package</label>
+                <select class="ga-field" id="ga-package" name="package" style="appearance:none;-webkit-appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 fill=%22none%22 stroke=%22%239A9082%22 stroke-width=%222%22><path d=%22M3 5l3 3 3-3%22/></svg>');background-repeat:no-repeat;background-position:right 14px center;cursor:pointer">
+                  <option>Essential — 15 photos</option>
+                  <option>Complete — 25 photos + 60s video</option>
+                  <option>Premium — 50 photos + 5 video clips</option>
+                  <option>Monthly plan — 4 shoots / month</option>
+                  <option>Custom / not sure yet</option>
+                </select>
+              </div>
+              <div><label class="ga-lab" for="ga-when">Preferred timeframe</label><input class="ga-field" id="ga-when" name="when" type="text" placeholder="Next week, weekday AM"/></div>
+            </div>
+            <div style="margin-top:14px"><label class="ga-lab" for="ga-notes">Anything else</label><textarea class="ga-field" id="ga-notes" name="notes" rows="3" placeholder="Gate code, special angles, deadline…" style="resize:vertical;min-height:84px"></textarea></div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:22px">
+              <p style="margin:0;display:flex;gap:9px;align-items:flex-start;font-size:.84rem;line-height:1.5;color:var(--ink2);max-width:42ch">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                After you book I'll email to confirm — check spam/junk and mark "not spam."
+              </p>
+              <button type="submit" style="display:inline-flex;align-items:center;gap:.5em;background:var(--accent);color:#F6F3EC;border:0;font-weight:600;font-size:1rem;padding:15px 28px;border-radius:9px;cursor:pointer;box-shadow:0 12px 30px rgba(193,73,43,.34);transition:transform .18s,box-shadow .18s,background .18s" style-hover="transform:translateY(-2px);background:var(--accent-d)">Send request
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </div>
+          </form>
+        </sc-if>
+      </div>
+      <iframe ref="{{ sinkRef }}" name="ga-form-sink" title="form sink" aria-hidden="true" tabindex="-1" style="position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none"></iframe>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer style="background:var(--dark);color:rgba(246,243,236,.6);padding:52px 28px 40px">
+    <div style="max-width:1180px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:28px;flex-wrap:wrap;padding-bottom:28px;border-bottom:1px solid rgba(246,243,236,.12)">
+        <a href="#top" style="display:flex;align-items:center;gap:11px;color:#F6F3EC;text-decoration:none">
+          <span style="width:30px;height:30px;border-radius:8px;flex:none;display:grid;place-items:center;background:var(--accent);color:#F6F3EC"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></span>
+          <span style="font-family:'Newsreader',serif;font-weight:500;font-size:1.08rem">Aerial Photography</span>
+        </a>
+        <nav style="display:flex;gap:22px;font-size:.9rem;flex-wrap:wrap">
+          <a href="#specialties" style="color:rgba(246,243,236,.64);text-decoration:none" style-hover="color:#F6F3EC">What I shoot</a>
+          <a href="#work" style="color:rgba(246,243,236,.64);text-decoration:none" style-hover="color:#F6F3EC">Work</a>
+          <a href="#why" style="color:rgba(246,243,236,.64);text-decoration:none" style-hover="color:#F6F3EC">Why aerials</a>
+          <a href="#pricing" style="color:rgba(246,243,236,.64);text-decoration:none" style-hover="color:#F6F3EC">Pricing</a>
+          <a href="portfolio.html" style="color:rgba(246,243,236,.64);text-decoration:none" style-hover="color:#F6F3EC">Portfolio</a>
+          <a href="#book" style="color:rgba(246,243,236,.64);text-decoration:none" style-hover="color:#F6F3EC">Book</a>
+        </nav>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding-top:22px;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;color:rgba(246,243,236,.45)">
+        <span>© {{ year }} AERIAL PHOTOGRAPHY · FAA PART 107 LICENSED · CENTRAL VIRGINIA</span>
+        <span><a href="mailto:aerialphotova@gmail.com" style="color:inherit;text-decoration:none">aerialphotova@gmail.com</a> · 804-833-2476</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== LIGHTBOX ===================== -->
+  <sc-if value="{{ lightboxOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeLightbox }}" style="position:fixed;inset:0;z-index:200;background:rgba(21,17,11,.94);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:30px">
+      <button onClick="{{ closeLightbox }}" aria-label="Close" style="position:absolute;top:20px;right:22px;width:46px;height:46px;border-radius:10px;border:1px solid rgba(246,243,236,.25);background:rgba(246,243,236,.06);color:#F6F3EC;cursor:pointer;display:grid;place-items:center" style-hover="background:rgba(246,243,236,.16)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <button onClick="{{ lightboxPrev }}" aria-label="Previous" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:12px;border:1px solid rgba(246,243,236,.25);background:rgba(246,243,236,.06);color:#F6F3EC;cursor:pointer;display:grid;place-items:center" style-hover="background:rgba(246,243,236,.16)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <figure onClick="{{ stop }}" style="margin:0;max-width:92vw;max-height:86vh;display:flex;flex-direction:column;align-items:center;gap:14px">
+        {{ lightboxImg }}
+        <figcaption style="font-family:'Space Mono',monospace;color:rgba(246,243,236,.75);font-size:.72rem;letter-spacing:.06em">{{ lightboxCaption }}</figcaption>
+      </figure>
+      <button onClick="{{ lightboxNext }}" aria-label="Next" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:12px;border:1px solid rgba(246,243,236,.25);background:rgba(246,243,236,.06);color:#F6F3EC;cursor:pointer;display:grid;place-items:center" style-hover="background:rgba(246,243,236,.16)"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C1492B&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#C1492B&quot;,&quot;#D98A3D&quot;,&quot;#1F8A5B&quot;,&quot;#2A6FDB&quot;]}}">
+class Component extends DCLogic {
+  // ============================================================
+  // GALLERY — the ONLY list to edit for the main-page top 8.
+  // Drop a JPG in /images and add one line. wide:true => panorama.
+  // Missing files fall back to a clean placeholder. Captions neutral.
+  // ============================================================
+  GALLERY = [
+    { src: "images/aerial-01.jpg", caption: "Richmond skyline at golden hour · Central Virginia", wide: true },
+    { src: "images/aerial-02.jpg", caption: "Downtown Richmond from above · Central Virginia" },
+    { src: "images/aerial-04.jpg", caption: "River city, evening light · Richmond" },
+    { src: "images/aerial-05.jpg", caption: "Countryside & acreage · Central Virginia" },
+    { src: "images/aerial-06.jpg", caption: "Aerial coverage · Richmond" },
+    { src: "images/aerial-07.jpg", caption: "Farmland from above · Central Virginia" },
+    { src: "images/aerial-08.jpg", caption: "Bridges & skyline · Richmond" },
+  ];
+
+  // ============================================================
+  // SPECIALTIES — mirrors the portfolio categories + sub-categories.
+  // Each links into the portfolio page. id = category id there.
+  // ============================================================
+  SPECIALTIES = [
+    { id: "residential", label: "Residential", desc: "Homes, lots, and new listings.", subs: [] },
+    { id: "commercial",  label: "Commercial", desc: "Sites, buildings, and developments.", subs: [] },
+    { id: "land",        label: "Land & Acreage", desc: "Open parcels and the lay of the land.", subs: ["Open Land", "Wildlife"] },
+    { id: "cityscape",   label: "Cityscape", desc: "Skyline, downtown, and city blocks.", subs: ["Richmond Area"] },
+    { id: "waterfront",  label: "Waterfront", desc: "Rivers, shoreline, and water views.", subs: ["James River"] },
+    { id: "events",      label: "Events & Venues", desc: "Grounds, venues, and gatherings.", subs: [] },
+  ];
+
+  // ============================================================
+  // PACKAGES — the ONLY list to edit for pricing. Launch prices.
+  // Source of truth: notes/PRICING_SPEC.md. ok:false => "—" row.
+  // The "Book X" button pre-selects the package in the form below.
+  // ============================================================
+  PACKAGES = [
+    { key: "Essential", name: "Essential", price: "$119", bestFor: "Homeowners, families, small businesses, and single-property shoots.",
+      features: [ {t:"15 professionally edited photos",ok:true}, {t:"All unedited session photos",ok:true}, {t:"No aerial video",ok:false}, {t:"24–48 hr delivery",ok:true} ], cta: "Book Essential" },
+    { key: "Complete", name: "Complete", price: "$199", popular: true, bestFor: "Weddings, events, mid-size commercial, farms, and real estate.",
+      features: [ {t:"25 professionally edited photos",ok:true}, {t:"All unedited session photos",ok:true}, {t:"1 × 60-second aerial video",ok:true}, {t:"24–48 hr delivery",ok:true} ], cta: "Book Complete" },
+    { key: "Premium", name: "Premium", price: "$299", bestFor: "Developers, large commercial sites, festivals, industrial, and multi-building complexes.",
+      features: [ {t:"50 professionally edited photos",ok:true}, {t:"All unedited session photos",ok:true}, {t:"5 aerial video clips",ok:true}, {t:"24–48 hr delivery",ok:true} ], cta: "Book Premium" },
+  ];
+
+  // ============================================================
+  // BOOKING FORM → Google Form.
+  // The form works now: on submit it opens your Google Form so the
+  // request is captured. To submit INLINE (no redirect), a developer
+  // can paste the field entry IDs below — find them via the form's
+  // "Get pre-filled link". When all are real entry.* IDs, the form
+  // posts silently in the background instead of opening a tab.
+  // ============================================================
+  GFORM_VIEW = "https://docs.google.com/forms/d/e/1FAIpQLSdobVKHdfw8mAMyBxTVuCi5M2ScsIOgn7tCyykslTmMcvgIcQ/viewform";
+  GFORM_POST = "https://docs.google.com/forms/d/e/1FAIpQLSdobVKHdfw8mAMyBxTVuCi5M2ScsIOgn7tCyykslTmMcvgIcQ/formResponse";
+  GFORM_ENTRY = { name: "", email: "", phone: "", address: "", package: "", when: "", notes: "" };
+
+  state = { lightbox: null, sent: false };
+
+  componentDidMount() {
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const root = this.root;
+    if (root) {
+      if (this.props.accent) { root.style.setProperty('--accent', this.props.accent); root.style.setProperty('--accent-d', this.props.accent); }
+      if (this.reduced) root.classList.add('reduced');
+      root.classList.add('js-reveal');
+      this.revealAll();
+
+      if (!this.reduced) {
+        this._hero = root.querySelector('[data-hero-bg]');
+        this._onScroll = () => {
+          if (this._raf) return;
+          this._raf = requestAnimationFrame(() => {
+            this._raf = null;
+            if (this._hero) this._hero.style.transform = 'translate3d(0,' + (window.scrollY * 0.2) + 'px,0)';
+          });
+        };
+        window.addEventListener('scroll', this._onScroll, { passive: true });
+      }
+    }
+    this._onKey = (e) => {
+      if (this.state.lightbox == null) return;
+      if (e.key === 'Escape') this.closeLightbox();
+      else if (e.key === 'ArrowRight') this.shift(1);
+      else if (e.key === 'ArrowLeft') this.shift(-1);
+    };
+    window.addEventListener('keydown', this._onKey);
+
+    // Arriving with a hash (e.g. portfolio.html -> index.html#book): the DC
+    // runtime builds the DOM after load, so the browser can't find the anchor
+    // at first paint. Re-run the scroll once our content exists.
+    if (location.hash && location.hash.length > 1) {
+      const id = decodeURIComponent(location.hash.slice(1));
+      const go = () => { const el = document.getElementById(id); if (el) el.scrollIntoView(); };
+      requestAnimationFrame(() => requestAnimationFrame(go));
+      setTimeout(go, 250);
+    }
+  }
+
+  revealAll() {
+    const root = this.root;
+    if (!root) return;
+    const reveal = Array.from(root.querySelectorAll('[data-reveal]:not(.in)'));
+    if (this.reduced || !('IntersectionObserver' in window)) { reveal.forEach(el => el.classList.add('in')); return; }
+    const vh = window.innerHeight || 800;
+    reveal.forEach(el => { if (el.getBoundingClientRect().top < vh - 40) el.classList.add('in'); });
+    if (!this._io) {
+      this._io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); this._io.unobserve(e.target); } });
+      }, { threshold: 0.14, rootMargin: '0px 0px -50px 0px' });
+    }
+    reveal.forEach(el => { if (!el.classList.contains('in')) this._io.observe(el); });
+    if (this._revealFallback) clearTimeout(this._revealFallback);
+    this._revealFallback = setTimeout(() => { root.querySelectorAll('[data-reveal]:not(.in)').forEach(el => el.classList.add('in')); }, 1500);
+  }
+
+  componentDidUpdate() { this.revealAll(); }
+
+  componentWillUnmount() {
+    if (this._io) this._io.disconnect();
+    if (this._onScroll) window.removeEventListener('scroll', this._onScroll);
+    if (this._revealFallback) clearTimeout(this._revealFallback);
+    if (this._onKey) window.removeEventListener('keydown', this._onKey);
+    document.body.style.overflow = '';
+  }
+
+  submitBooking(e) {
+    e.preventDefault();
+    const f = this._form || e.target;
+    const get = (n) => (f && f.elements[n]) ? f.elements[n].value : '';
+    const vals = { name: get('name'), email: get('email'), phone: get('phone'), address: get('address'), package: get('package'), when: get('when'), notes: get('notes') };
+    const entries = this.GFORM_ENTRY;
+    const configured = Object.keys(vals).every(k => /^entry\.\d+$/.test(entries[k] || ''));
+    if (configured) {
+      // silent background POST to Google Forms
+      const tmp = document.createElement('form');
+      tmp.action = this.GFORM_POST; tmp.method = 'POST'; tmp.target = 'ga-form-sink'; tmp.style.display = 'none';
+      Object.keys(vals).forEach(k => { const i = document.createElement('input'); i.type = 'hidden'; i.name = entries[k]; i.value = vals[k]; tmp.appendChild(i); });
+      document.body.appendChild(tmp); tmp.submit(); setTimeout(() => tmp.remove(), 0);
+    } else {
+      // fallback: open the real Google Form so the request is never lost
+      try { window.open(this.GFORM_VIEW, '_blank', 'noopener'); } catch (err) {}
+    }
+    this.setState({ sent: true });
+  }
+
+  resetForm() { this.setState({ sent: false }); }
+
+  // Pre-select a package in the booking form, then scroll to it.
+  bookPackage(key) {
+    const f = this._form;
+    if (f && f.elements && f.elements['package']) {
+      const sel = f.elements['package'];
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].text.indexOf(key) === 0) { sel.selectedIndex = i; break; }
+      }
+    }
+    const el = document.getElementById('book');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  openLightbox(i) { this.setState({ lightbox: i }); document.body.style.overflow = 'hidden'; }
+  closeLightbox() { this.setState({ lightbox: null }); document.body.style.overflow = ''; }
+  shift(d) { this.setState(s => s.lightbox == null ? null : { lightbox: (s.lightbox + d + this.GALLERY.length) % this.GALLERY.length }); }
+
+  renderVals() {
+    const lb = this.state.lightbox;
+    return {
+      rootRef: (el) => { this.root = el; },
+      formRef: (el) => { this._form = el; },
+      sinkRef: (el) => { this._sink = el; },
+      year: String(new Date().getFullYear()),
+      gallery: this.GALLERY.map((g, i) => ({
+        src: g.src, caption: g.caption,
+        gridClass: g.wide ? 'ga-tile wide' : 'ga-tile',
+        onOpen: () => this.openLightbox(i),
+      })),
+      specialties: this.SPECIALTIES.map((s, i) => ({
+        label: s.label, desc: s.desc, subs: s.subs, hasSubs: s.subs.length > 0,
+        idx: String(i + 1).padStart(2, '0'),
+        href: 'portfolio.html',
+      })),
+      packages: this.PACKAGES.map(p => ({
+        name: p.name, price: p.price, unit: 'per shoot', bestFor: p.bestFor, cta: p.cta,
+        popular: !!p.popular,
+        cardClass: p.popular ? 'ga-pkg pop' : 'ga-pkg',
+        features: p.features.map(f => ({ t: f.t, cls: f.ok ? 'ok' : 'no' })),
+        onBook: () => this.bookPackage(p.key),
+      })),
+      bookMonthly: () => this.bookPackage('Monthly'),
+      onImgError: (e) => { const t = e.target; t.style.display = 'none'; const ph = t.parentNode && t.parentNode.querySelector('[data-ph]'); if (ph) ph.style.display = 'grid'; },
+      sent: this.state.sent,
+      notSent: !this.state.sent,
+      onSubmit: (e) => this.submitBooking(e),
+      resetForm: () => this.resetForm(),
+      lightboxOpen: lb != null,
+      lightboxCaption: lb != null ? this.GALLERY[lb].caption : '',
+      lightboxImg: lb != null ? React.createElement('img', { src: this.GALLERY[lb].src, alt: this.GALLERY[lb].caption, style: { maxWidth: '92vw', maxHeight: '78vh', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 30px 80px rgba(0,0,0,.6)' } }) : null,
+      closeLightbox: () => this.closeLightbox(),
+      lightboxNext: () => this.shift(1),
+      lightboxPrev: () => this.shift(-1),
+      stop: (e) => e.stopPropagation(),
+    };
+  }
+}
+</script>
+</body>
+</html>
