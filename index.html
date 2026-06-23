@@ -306,16 +306,14 @@
         <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:18px 28px;border-bottom:1px solid var(--line2);background:var(--paper)">
           <span style="display:flex;align-items:center;gap:9px;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)"><span style="width:7px;height:7px;border-radius:50%;background:var(--accent)"></span>Booking request</span>
           <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:.84rem">
-            <a href="mailto:aerialphotova@gmail.com" style="color:var(--ink2);text-decoration:none" style-hover="color:var(--accent)">aerialphotova@gmail.com</a>
-            <a href="tel:+18048332476" style="color:var(--ink2);text-decoration:none" style-hover="color:var(--accent)">804-833-2476</a>
-          </div>
+            <a href="mailto:aerialphotova@gmail.com" style="color:var(--ink2);text-decoration:none" style-hover="color:var(--accent)">aerialphotova@gmail.com</a>          </div>
         </div>
 
         <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
           <div style="padding:56px 32px;text-align:center">
             <div style="width:58px;height:58px;border-radius:50%;margin:0 auto 22px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
             <h3 style="margin:0 0 10px;font-family:'Newsreader',serif;font-weight:500;font-size:1.7rem;color:var(--ink)">Request sent</h3>
-            <p style="margin:0 auto;max-width:42ch;color:var(--ink2);text-wrap:pretty">Thanks — your details opened in my booking form to finish. I'll email to confirm the date. <strong style="color:var(--ink)">Check your spam/junk folder</strong> just in case and mark it "not spam."</p>
+            <p style="margin:0 auto;max-width:42ch;color:var(--ink2);text-wrap:pretty">Thanks — I've got your request and sent a confirmation to your email. I'll follow up to confirm the date. <strong style="color:var(--ink)">Check your spam/junk folder</strong> just in case and mark it "not spam."</p>
             <button onClick="{{ resetForm }}" style="margin-top:24px;background:transparent;color:var(--accent);border:1px solid var(--accent);font-weight:600;font-size:.9rem;padding:11px 22px;border-radius:9px;cursor:pointer;transition:background .2s" style-hover="background:color-mix(in srgb,var(--accent) 10%,transparent)">Send another request</button>
           </div>
         </sc-if>
@@ -379,7 +377,7 @@
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding-top:22px;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;color:rgba(246,243,236,.45)">
         <span>© {{ year }} AERIAL PHOTOGRAPHY · FAA PART 107 LICENSED · CENTRAL VIRGINIA</span>
-        <span><a href="mailto:aerialphotova@gmail.com" style="color:inherit;text-decoration:none">aerialphotova@gmail.com</a> · 804-833-2476</span>
+        <span><a href="mailto:aerialphotova@gmail.com" style="color:inherit;text-decoration:none">aerialphotova@gmail.com</a></span>
       </div>
     </div>
   </footer>
@@ -444,16 +442,13 @@ class Component extends DCLogic {
   ];
 
   // ============================================================
-  // BOOKING FORM → Google Form.
-  // The form works now: on submit it opens your Google Form so the
-  // request is captured. To submit INLINE (no redirect), a developer
-  // can paste the field entry IDs below — find them via the form's
-  // "Get pre-filled link". When all are real entry.* IDs, the form
-  // posts silently in the background instead of opening a tab.
+  // BOOKING FORM → FormSubmit (emails owner + auto-confirms customer).
+  // No backend / no account needed. The FIRST submission triggers a
+  // one-time activation email to FORM_TO — click the link in it once to
+  // start receiving requests. Auto-confirmation goes to the customer's
+  // "email" field via _autoresponse below.
   // ============================================================
-  GFORM_VIEW = "https://docs.google.com/forms/d/e/1FAIpQLSdobVKHdfw8mAMyBxTVuCi5M2ScsIOgn7tCyykslTmMcvgIcQ/viewform";
-  GFORM_POST = "https://docs.google.com/forms/d/e/1FAIpQLSdobVKHdfw8mAMyBxTVuCi5M2ScsIOgn7tCyykslTmMcvgIcQ/formResponse";
-  GFORM_ENTRY = { name: "", email: "", phone: "", address: "", package: "", when: "", notes: "" };
+  FORM_TO = "aerialphotova@gmail.com";
 
   state = { lightbox: null, sent: false };
 
@@ -528,19 +523,19 @@ class Component extends DCLogic {
     e.preventDefault();
     const f = this._form || e.target;
     const get = (n) => (f && f.elements[n]) ? f.elements[n].value : '';
-    const vals = { name: get('name'), email: get('email'), phone: get('phone'), address: get('address'), package: get('package'), when: get('when'), notes: get('notes') };
-    const entries = this.GFORM_ENTRY;
-    const configured = Object.keys(vals).every(k => /^entry\.\d+$/.test(entries[k] || ''));
-    if (configured) {
-      // silent background POST to Google Forms
-      const tmp = document.createElement('form');
-      tmp.action = this.GFORM_POST; tmp.method = 'POST'; tmp.target = 'ga-form-sink'; tmp.style.display = 'none';
-      Object.keys(vals).forEach(k => { const i = document.createElement('input'); i.type = 'hidden'; i.name = entries[k]; i.value = vals[k]; tmp.appendChild(i); });
-      document.body.appendChild(tmp); tmp.submit(); setTimeout(() => tmp.remove(), 0);
-    } else {
-      // fallback: open the real Google Form so the request is never lost
-      try { window.open(this.GFORM_VIEW, '_blank', 'noopener'); } catch (err) {}
-    }
+    const data = {
+      name: get('name'), email: get('email'), phone: get('phone'),
+      address: get('address'), package: get('package'), when: get('when'), notes: get('notes'),
+      _subject: 'New booking request — ' + (get('name') || 'website'),
+      _template: 'table',
+      _autoresponse: "Thanks for your booking request with Aerial Photography. I've received your details and will email you to confirm the date shortly. — Aerial Photography · FAA Part 107 Licensed · Central Virginia"
+    };
+    // Emails the request to FORM_TO and auto-confirms the customer (their "email" field).
+    fetch('https://formsubmit.co/ajax/' + this.FORM_TO, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(function () {});
     this.setState({ sent: true });
   }
 
