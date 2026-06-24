@@ -551,7 +551,12 @@ class Component extends DCLogic {
     });
     if (f && typeof f.reportValidity === 'function' && !f.reportValidity()) return;
     const G = this.GFORM;
-    const fd = new FormData();
+    // Use URLSearchParams (application/x-www-form-urlencoded), NOT FormData.
+    // Google's formResponse endpoint parses single-value fields from multipart
+    // FormData fine, but drops REPEATED keys — which silently lost the Add-ons
+    // checkbox (the only field posted once per checked box). Urlencoded encodes
+    // repeated keys as entry.660334=A&entry.660334=B, which Google accepts.
+    const fd = new URLSearchParams();
     fd.append(G.name, get('name'));
     fd.append(G.email, get('email'));
     fd.append(G.phone, get('phone'));
