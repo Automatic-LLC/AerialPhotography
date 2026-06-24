@@ -325,7 +325,7 @@
               <div><label class="ga-lab" for="ga-email">Email</label><input class="ga-field" id="ga-email" name="email" type="email" required placeholder="you@brokerage.com"/></div>
             </div>
             <div class="ga-form2" style="margin-top:14px">
-              <div><label class="ga-lab" for="ga-phone">Phone</label><input class="ga-field" id="ga-phone" name="phone" type="tel" placeholder="804-555-0123"/></div>
+              <div><label class="ga-lab" for="ga-phone">Phone</label><input class="ga-field" id="ga-phone" name="phone" type="tel" required placeholder="804-555-0123"/></div>
               <div><label class="ga-lab" for="ga-address">Property address</label><input class="ga-field" id="ga-address" name="address" type="text" required placeholder="123 Main St, Richmond VA"/></div>
             </div>
             <div class="ga-form2" style="margin-top:14px">
@@ -338,7 +338,7 @@
                   <option>Custom — describe in Notes below</option>
                 </select>
               </div>
-              <div><label class="ga-lab" for="ga-when">Preferred date</label><input class="ga-field" id="ga-when" name="when" type="date"/></div>
+              <div><label class="ga-lab" for="ga-when">Preferred date</label><input class="ga-field" id="ga-when" name="when" type="date" required/></div>
             </div>
             <div style="margin-top:14px">
               <span class="ga-lab">Add-ons (optional)</span>
@@ -454,12 +454,13 @@ class Component extends DCLogic {
   // The field IDs and the Package <option> strings (in the markup above)
   // MUST match the live Google Form exactly, or Google silently rejects
   // the response. "Preferred date" is a Google date question, so it is
-  // posted as _year / _month / _day. Email has no field on the form, so
-  // it is folded into Notes.
+  // posted as _year / _month / _day. Email is its own required short-answer
+  // question on the form, so it is posted to its own entry.
   // ============================================================
   GFORM_POST = "https://docs.google.com/forms/d/e/1FAIpQLSdobVKHdfw8mAMyBxTVuCi5M2ScsIOgn7tCyykslTmMcvgIcQ/formResponse";
   GFORM = {
     name:    "entry.1823719113",
+    email:   "entry.1416649547",
     phone:   "entry.245555874",
     address: "entry.1834484994",
     package: "entry.1431225465",
@@ -541,9 +542,18 @@ class Component extends DCLogic {
     e.preventDefault();
     const f = this._form || e.target;
     const get = (n) => (f && f.elements[n]) ? f.elements[n].value : '';
+    // The DC runtime strips the HTML `required` attribute when it rebuilds the
+    // DOM, so native validation never fires. Re-apply `required` to the fields
+    // the Google Form marks required, then let the browser validate — otherwise
+    // Google silently rejects any submission missing one of them.
+    ['name', 'email', 'phone', 'address', 'when'].forEach((n) => {
+      if (f && f.elements[n]) f.elements[n].required = true;
+    });
+    if (f && typeof f.reportValidity === 'function' && !f.reportValidity()) return;
     const G = this.GFORM;
     const fd = new FormData();
     fd.append(G.name, get('name'));
+    fd.append(G.email, get('email'));
     fd.append(G.phone, get('phone'));
     fd.append(G.address, get('address'));
     fd.append(G.package, get('package'));
@@ -561,9 +571,7 @@ class Component extends DCLogic {
       fd.append(G.date + '_month', String(parseInt(parts[1], 10)));
       fd.append(G.date + '_day', String(parseInt(parts[2], 10)));
     }
-    // No email field on the Google Form — fold the customer's email into Notes.
-    const email = get('email');
-    fd.append(G.notes, (email ? ('Email: ' + email + '\n') : '') + get('notes'));
+    fd.append(G.notes, get('notes'));
     // Opaque cross-origin POST: records the response in Google Forms without
     // navigating away. Response is not readable (no-cors) by design.
     fetch(this.GFORM_POST, { method: 'POST', mode: 'no-cors', body: fd }).catch(function () {});
